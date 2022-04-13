@@ -2,7 +2,7 @@
   "name": "pantheon-systems/pantheon-decoupled-auth-example",
   "description": "Example configuration used for sourcing data requiring authorization using an application password",
   "type": "wordpress-plugin",
-  "license": "GPLv3",
+  "license": "GPLv2",
   "authors": [
     {
       "name": "abhisekmazumdar",
