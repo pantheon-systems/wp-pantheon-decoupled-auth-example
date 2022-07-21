@@ -48,10 +48,20 @@ function pantheon_decoupled_auth_example_create_post() {
 }
 
 /**
+ * Create example user.
+ */
+function pantheon_decoupled_auth_example_create_user() {
+	$user = ['username' => 'decouple_example_user', 'password' => wp_generate_password(16)];
+	$user_id = wp_create_user($user['username'], $user['password']);
+	$user['id'] = $user_id;
+	set_transient( 'decouple_example_user', $user);
+}
+
+/**
  * Create example application password.
  */
 function pantheon_decoupled_auth_example_create_application_password() {
-	$created = \WP_Application_Passwords::create_new_application_password('1', ['name' => 'Example Application']);
+	$created = \WP_Application_Passwords::create_new_application_password(get_transient('decouple_example_user')['id'], ['name' => 'Example Application']);
 	set_transient( 'application_password_created', $created[0]);
 }
 
@@ -62,6 +72,13 @@ function app_password_admin_notice() {
 	if( get_transient( 'application_password_created' ) ) {
 		?>
 			<div class="notice notice-success notice-alt below-h2">
+				<strong>Pantheon Decoupled Example User</strong>
+				<p class="decoupled-example-user-display">
+					<label for="decoupled-example-user-password">
+						The password of the <strong>decouple_example_user</strong> is:
+					</label>
+					<input type="text" class="code" value="<?php print_r(get_transient('decouple_example_user')['password']) ?>" />
+				</p>
 				<strong>Pantheon Decoupled Auth Example</strong>
 				<p class="application-password-display">
 					<label for="new-application-password-value">
@@ -72,6 +89,7 @@ function app_password_admin_notice() {
 				<p><?php _e( 'Be sure to save this in a safe location. You will not be able to retrieve it.' ); ?></p>
 			</div>
 		<?php
+		delete_transient('decouple_example_user');
 		delete_transient('application_password_created');
 	}
 }
@@ -99,7 +117,11 @@ function pantheon_decoupled_auth_example_menu() {
 function pantheon_decoupled_auth_example_activate() {
 	pantheon_decoupled_auth_example_create_post();
 	pantheon_decoupled_auth_example_menu();
-	pantheon_decoupled_auth_example_create_application_password();
+	if (username_exists('decouple_example_user') == null) {
+		pantheon_decoupled_auth_example_create_user();
+		pantheon_decoupled_auth_example_create_application_password();
+	}
+
 }
 add_action('admin_notices', 'app_password_admin_notice');
 register_activation_hook(__FILE__, 'pantheon_decoupled_auth_example_activate');
