@@ -104,7 +104,7 @@ function pantheon_decoupled_auth_example_menu() {
 		'menu-item-title' =>  __('Private Example Post'),
 		'menu-item-classes' => 'private_example_post',
 		'menu-item-url' => home_url( '/private-example-post/' ),
-		'menu-item-status' => 'private'
+		'menu-item-status' => 'publish'
 	]);
 	$menu_locations = get_nav_menu_locations();
 	$menu_locations['footer'] = $menu_id;
