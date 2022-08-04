@@ -95,28 +95,10 @@ function app_password_admin_notice() {
 }
 
 /**
- * Create example menu when activating the plugin.
- */
-function pantheon_decoupled_auth_example_menu() {
-	$menu = wp_get_nav_menu_object('Example Menu');
-	$menu_id = $menu ? $menu->term_id : wp_create_nav_menu('Example Menu');
-	wp_update_nav_menu_item($menu_id, 0, [
-		'menu-item-title' =>  __('Private Example Post'),
-		'menu-item-classes' => 'private_example_post',
-		'menu-item-url' => home_url( '/private-example-post/' ),
-		'menu-item-status' => 'private'
-	]);
-	$menu_locations = get_nav_menu_locations();
-	$menu_locations['footer'] = $menu_id;
-	set_theme_mod( 'nav_menu_locations', $menu_locations );
-}
-
-/**
  * Activate the plugin.
  */
 function pantheon_decoupled_auth_example_activate() {
 	pantheon_decoupled_auth_example_create_post();
-	pantheon_decoupled_auth_example_menu();
 	if (username_exists('decouple_example_user') == null) {
 		pantheon_decoupled_auth_example_create_user();
 		pantheon_decoupled_auth_example_create_application_password();
