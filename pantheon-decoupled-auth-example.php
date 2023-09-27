@@ -66,36 +66,6 @@ function pantheon_decoupled_auth_example_create_user() {
  */
 function pantheon_decoupled_auth_example_create_application_password() {
 	$created = \WP_Application_Passwords::create_new_application_password(get_transient('decoupled_example_user')['id'], ['name' => 'Example Application']);
-	set_transient( 'application_password_created', $created[0]);
-}
-
-/**
- * Show the Example App password.
- */
-function app_password_admin_notice() {
-	if( get_transient( 'application_password_created' ) ) {
-		?>
-			<div class="notice notice-success notice-alt below-h2">
-				<strong>Pantheon Decoupled Example User</strong>
-				<p class="decoupled-example-user-display">
-					<label for="decoupled-example-user-password">
-						The password of the <strong>decoupled_example_user</strong> is:
-					</label>
-					<input type="text" class="code" value="<?php print_r(get_transient('decoupled_example_user')['user_pass']) ?>" />
-				</p>
-				<strong>Pantheon Decoupled Auth Example</strong>
-				<p class="application-password-display">
-					<label for="new-application-password-value">
-						The password of the <strong>Example Application</strong> is:
-					</label>
-					<input type="text" class="code" value="<?php printf(esc_attr( \WP_Application_Passwords::chunk_password(get_transient( 'application_password_created' )) )); ?>" />
-				</p>
-				<p><?php _e( 'Be sure to save this in a safe location. You will not be able to retrieve it.' ); ?></p>
-			</div>
-		<?php
-		delete_transient('decoupled_example_user');
-		delete_transient('application_password_created');
-	}
 }
 
 /**
@@ -109,5 +79,4 @@ function pantheon_decoupled_auth_example_activate() {
 	}
 
 }
-add_action('admin_notices', 'app_password_admin_notice');
 register_activation_hook(__FILE__, 'pantheon_decoupled_auth_example_activate');
